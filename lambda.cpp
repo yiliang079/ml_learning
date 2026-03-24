@@ -3,6 +3,12 @@
 #include <algorithm>
 #include <cstdint>
 
+struct Packet {
+    int id;
+    int size;
+};
+
+
 int main() {
 
 
@@ -47,6 +53,22 @@ std::vector<int> latencies = {300, 700, 450, 1200, 100};
         return a < b; // 从小到大
     });
 
+//--------------------------------------------------------------------------
+//test3
+    std::cout << "---------test3--------- "  << std::endl;
 
+    std::vector<Packet> stream = {{1, 64}, {2, 1518}, {3, 256}, {4, 2000}};
+    int max_mtu = 1500;
+    int dropped_count = 0;
+
+    // 练习：使用 Lambda 过滤并计数
+    std::for_each(stream.begin(), stream.end(), [max_mtu, &dropped_count](const Packet& p) {
+        if (p.size > max_mtu) {
+            std::cout << "Dropping Packet ID: " << p.id << " (Size too large)\n";
+            dropped_count++; // 引用捕获，直接修改外部变量
+        }
+    });
+
+    std::cout << "Total dropped: " << dropped_count << std::endl;
     return 0;
 }
